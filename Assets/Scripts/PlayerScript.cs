@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
-{   
+{
+    public int lives;
     public float movementSpeed;
     public float jumpForce;
     public GameObject characterSprite;
@@ -21,13 +22,21 @@ public class PlayerScript : MonoBehaviour
     void move()
     {
         Animation anim = characterSprite.GetComponent<Animation>();
+        SpriteRenderer[] sprites = GetComponentsInChildren<SpriteRenderer>();
+
         if (Input.GetKeyDown(KeyCode.A))
         {
-            characterSprite.transform.localRotation = new Quaternion(0, 180, 0, 0);
+            foreach(SpriteRenderer sprite in sprites)
+            {
+                sprite.flipX = true;
+            }
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            characterSprite.transform.localRotation = new Quaternion(0, 0, 0, 0);
+            foreach (SpriteRenderer sprite in sprites)
+            {
+                sprite.flipX = false;
+            }
         }
         Vector2 newPos = new Vector2(movementSpeed * Input.GetAxisRaw("Horizontal") * Time.deltaTime, 0);
         gameObject.transform.Translate(newPos);
