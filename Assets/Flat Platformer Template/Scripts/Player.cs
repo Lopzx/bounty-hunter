@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : MonoBehaviour {
@@ -12,7 +13,6 @@ public class Player : MonoBehaviour {
     public Transform _Blade, _GroundCast;
     public Camera cam;
     public bool mirror;
-
 
     private bool _canJump, _canWalk;
     private bool _isWalk, _isJump;
