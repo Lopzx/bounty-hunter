@@ -9,17 +9,22 @@ public class InGameScript : MonoBehaviour
     public int playerHP;
     public GameObject prefabHealth;
     public List<GameObject> healths;
+
+    //Script Settings
+    public float healthGap;
+
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.Find("Player");
         playerScript = player.GetComponent<PlayerScript>();
         playerHP = playerScript.lives;
+
         for (int i = 0; i < playerHP; i++)
         {
-            Vector3 nextPos = gameObject.transform.position + new Vector3(-200f + (50 * healths.Count), 100f, 0f);
+            Vector3 nextPos = gameObject.transform.position + new Vector3(-371f + (healthGap * healths.Count), 124f, 0f);
             GameObject heartImage = Instantiate(prefabHealth, nextPos, Quaternion.EulerRotation(new Vector3(0, 0, 0)));
-
+            Debug.Log(i);
             healths.Add(heartImage);
             heartImage.transform.parent = gameObject.transform;
         }
@@ -30,7 +35,13 @@ public class InGameScript : MonoBehaviour
     void Update()
     {
         playerHP = playerScript.lives;
-        Debug.Log(gameObject);
-       
+    }
+
+    private void OnDestroy()
+    {
+        foreach(GameObject heart in healths)
+        {
+            Debug.Log(heart);
+        }
     }
 }

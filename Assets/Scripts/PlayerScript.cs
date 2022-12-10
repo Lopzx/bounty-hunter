@@ -53,8 +53,6 @@ public class PlayerScript : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, Vector2.down, gameObject.transform.localScale.y);
         GameObject hitObj = hit.transform.gameObject;
-        Debug.DrawRay(gameObject.transform.position, Vector2.down, Color.red, 0.01f, false);
-        Debug.Log(hitObj);
         if (hitObj.tag == "Ground")
         {
             jumping = false;
@@ -70,7 +68,6 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && !jumping)
         {
             jump();
-            Debug.Log("Jump");
         }
     }
 }
