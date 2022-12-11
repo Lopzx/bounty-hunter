@@ -7,7 +7,10 @@ public class PlayerScript : MonoBehaviour
     public int lives;
     public float movementSpeed;
     public float jumpForce;
+    private float horizontalInput;
+
     public GameObject characterSprite;
+    private Rigidbody2D rb;
 
     private float timeBtwAttack;
     public float startTimeBtwAttack;
@@ -18,12 +21,13 @@ public class PlayerScript : MonoBehaviour
     public int damage;
 
     //State
-    bool jumping = false;
+    public bool jumping = false;
     
 
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
         characterSprite = transform.Find("CharacterSprite").gameObject;
     }
 
@@ -46,8 +50,7 @@ public class PlayerScript : MonoBehaviour
                 sprite.flipX = false;
             }
         }
-        Vector2 newPos = new Vector2(movementSpeed * Input.GetAxisRaw("Horizontal") * Time.deltaTime, 0);
-        gameObject.transform.Translate(newPos);
+        /*gameObject.transform.Translate(newPos);*/
     }
 
     void jump()
@@ -57,23 +60,23 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-    void checkJump()
+    bool CheckJump()
     {
         RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, Vector2.down, gameObject.transform.localScale.y);
+        if (hit.collider == null) { return false; }
         GameObject hitObj = hit.transform.gameObject;
-        if (hitObj.tag == "Ground")
+        if (hitObj.CompareTag("Ground"))
         {
-            jumping = false;
+            return true;
         }
-
+        return false;
     }
 
     // Update is called once per frame
     void Update()
     {
         move();
-        checkJump();
-        if (Input.GetKeyDown(KeyCode.Space) && !jumping)
+        if (Input.GetKeyDown(KeyCode.Space) && CheckJump())
         {
             jump();
         }
@@ -96,5 +99,11 @@ public class PlayerScript : MonoBehaviour
         {
             timeBtwAttack -= Time.deltaTime;
         }
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+    }
+
+    private void FixedUpdate()
+    {
+        rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
     }
 }
