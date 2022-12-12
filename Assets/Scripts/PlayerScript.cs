@@ -8,9 +8,14 @@ public class PlayerScript : MonoBehaviour
     public float movementSpeed;
     public float jumpForce;
     private float horizontalInput;
+    private float dashingPower = 20f;
+    private float dashingTime = 0.2f;
+    private float dashingCooldown = 1f;
 
     public GameObject characterSprite;
     private Rigidbody2D rb;
+    Animation anim;
+    SpriteRenderer[] sprites;
 
     private float timeBtwAttack;
     public float startTimeBtwAttack;
@@ -21,7 +26,9 @@ public class PlayerScript : MonoBehaviour
     public int damage;
 
     //State
-    public bool jumping = false;
+    private bool jumping = false;
+    private bool canDash = true;
+    private bool isDashing = false;
     
 
     // Start is called before the first frame update
@@ -29,13 +36,12 @@ public class PlayerScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         characterSprite = transform.Find("CharacterSprite").gameObject;
+        anim = characterSprite.GetComponent<Animation>();
+        sprites = GetComponentsInChildren<SpriteRenderer>();
     }
 
     void move()
     {
-        Animation anim = characterSprite.GetComponent<Animation>();
-        SpriteRenderer[] sprites = GetComponentsInChildren<SpriteRenderer>();
-
         if (Input.GetKeyDown(KeyCode.A))
         {
             foreach(SpriteRenderer sprite in sprites)
@@ -53,7 +59,24 @@ public class PlayerScript : MonoBehaviour
         /*gameObject.transform.Translate(newPos);*/
     }
 
-    void jump()
+    private IEnumerator dash() {
+        canDash = false;
+        isDashing = true;
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+        if (sprites[0].flipX == true) {
+            rb.velocity = new Vector2(-1f * dashingPower, 0f);
+        } else {
+            rb.velocity = new Vector2(dashingPower, 0f);
+        }
+        yield return new WaitForSeconds(dashingTime);
+        rb.gravityScale = originalGravity;
+        isDashing = false;
+        yield return new WaitForSeconds(dashingCooldown);
+        canDash = true;
+    }
+
+    private void jump()
     {
         jumping = true;
         gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, jumpForce));
@@ -75,10 +98,14 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isDashing) { return; }
         move();
-        if (Input.GetKeyDown(KeyCode.Space) && CheckJump())
-        {
+        if (Input.GetKeyDown(KeyCode.Space) && CheckJump()) {
             jump();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash) {
+            StartCoroutine(dash());
         }
 
         //attack
@@ -104,6 +131,7 @@ public class PlayerScript : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(isDashing) { return; }
         rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
     }
 }
