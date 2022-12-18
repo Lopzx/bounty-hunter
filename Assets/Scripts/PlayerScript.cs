@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+    [SerializeField] private Camera mainCamera;
+    
     public int lives;
     public float movementSpeed;
     public float jumpForce;
@@ -44,17 +46,19 @@ public class PlayerScript : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            foreach(SpriteRenderer sprite in sprites)
-            {
-                sprite.flipX = true;
-            }
+            //foreach(SpriteRenderer sprite in sprites)
+            //{
+            //    sprite.flipX = true;
+            //}
+            transform.rotation = Quaternion.Euler(0,180,0);
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            foreach (SpriteRenderer sprite in sprites)
-            {
-                sprite.flipX = false;
-            }
+            //foreach (SpriteRenderer sprite in sprites)
+            //{
+            //    sprite.flipX = false;
+            //}
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
         /*gameObject.transform.Translate(newPos);*/
     }
