@@ -7,10 +7,8 @@ public class Enemy : MonoBehaviour
 {
     private Rigidbody2D rb;
     public int health;
-    public int damage = 1;
     public float speed;
     public float distance;
-    public float timeBtwAttack;
 
     private bool movingRight = true;
 
@@ -22,6 +20,12 @@ public class Enemy : MonoBehaviour
     public Transform posOne;
     public Transform posTwo;
     public Transform target;
+
+    //KnockBack
+    public float KBForce;
+    public float KBCounter;
+    public float KBTotalTime;
+    public bool KnockFromRight;
 
     [SerializeField] float baseCastDist;
     
@@ -86,17 +90,28 @@ public class Enemy : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Move();
+        if (KBCounter <= 0)
+        {
+            Move();
+        }
+        else
+        {
+            if (KnockFromRight)
+            {
+                rb.velocity = new Vector2(-KBForce, KBForce);
+            }
+            else
+            {
+                rb.velocity = new Vector2(KBForce, KBForce);
+            }
+
+            KBCounter -= Time.deltaTime;
+        }
     }
 
     public void Move()
     {
         transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-    }
-
-    public void Attack()
-    {
-
     }
 
     public void TakeDamage(int damage)

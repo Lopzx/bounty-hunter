@@ -27,10 +27,17 @@ public class PlayerScript : MonoBehaviour
     public float attackRange;
     public int damage;
 
+    //KnockBack
+    public float KBForce;
+    public float KBCounter;
+    public float KBTotalTime;
+    public bool KnockFromRight;
+
     //State
     private bool jumping = false;
     private bool canDash = true;
     private bool isDashing = false;
+    private bool facingRight = true;
     
 
     // Start is called before the first frame update
@@ -51,6 +58,7 @@ public class PlayerScript : MonoBehaviour
             //    sprite.flipX = true;
             //}
             transform.rotation = Quaternion.Euler(0,180,0);
+            facingRight = false;
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
@@ -59,6 +67,7 @@ public class PlayerScript : MonoBehaviour
             //    sprite.flipX = false;
             //}
             transform.rotation = Quaternion.Euler(0, 0, 0);
+            facingRight = true;
         }
         /*gameObject.transform.Translate(newPos);*/
     }
@@ -124,6 +133,15 @@ public class PlayerScript : MonoBehaviour
                     Enemy enemyScript = enemiesToDamage[i].GetComponent<Enemy>();
                     if (enemyScript != null)
                     {
+                        enemyScript.KBCounter = enemyScript.KBTotalTime;
+                        if (facingRight)
+                        {
+                            enemyScript.KnockFromRight = false;
+                        }
+                        else
+                        {
+                            enemyScript.KnockFromRight = true;
+                        }
                         enemyScript.TakeDamage(damage);
                     }
                 }
@@ -140,6 +158,34 @@ public class PlayerScript : MonoBehaviour
     private void FixedUpdate()
     {
         if(isDashing) { return; }
-        rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
+
+        if (KBCounter <= 0)
+        {
+           rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
+        }
+        else
+        {
+            if (KnockFromRight)
+            {
+                rb.velocity = new Vector2(-KBForce, KBForce);
+            }
+            else
+            {
+                rb.velocity = new Vector2(KBForce, KBForce);
+            }
+
+            KBCounter -= Time.deltaTime;
+        }
+        
+    }
+
+    public void TakeDamage(int damage)
+    {
+        lives -= damage;
+
+        if (lives < 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
