@@ -68,7 +68,7 @@ public class PlayerScript : MonoBehaviour
         isDashing = true;
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
-        if (sprites[0].flipX == true) {
+        if (this.transform.rotation.y == -1) {
             rb.velocity = new Vector2(-1f * dashingPower, 0f);
         } else {
             rb.velocity = new Vector2(dashingPower, 0f);
