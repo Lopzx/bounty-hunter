@@ -103,7 +103,7 @@ public class PlayerScript : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, Vector2.down, gameObject.transform.localScale.y,groundLayer);
         if (hit.collider == null) { return false; }
         GameObject hitObj = hit.transform.gameObject;
-        if (hitObj.CompareTag("Ground"))
+        if (hitObj.CompareTag("Ground") || hitObj.CompareTag("AirGround"))
         {
             return true;
         }

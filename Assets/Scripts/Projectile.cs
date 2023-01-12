@@ -12,16 +12,14 @@ public class Projectile : MonoBehaviour
 
     public PlayerScript playerScript;
     public bool facingRight;
+
+    private Vector2 direction;
+
     // Start is called before the first frame update
     void Start()
     {
         projectileCount = projectileLife;
-        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
-        facingRight = playerScript.facingRight;
-        if (!facingRight)
-        {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
+        rb.velocity = direction * speed;
     }
 
     // Update is called once per frame
@@ -36,28 +34,41 @@ public class Projectile : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (facingRight)
-        {
-            rb.velocity = new Vector2(speed, rb.velocity.y);
-        }
-        else
-        {
-            rb.velocity = new Vector2(-speed, rb.velocity.y);
-        }
         
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.CompareTag("Enemy"))
         {
             Enemy enemy = collision.transform.GetComponent<Enemy>();
             if(enemy == null)
             {
                 return;
             }
+
+            enemy.KBCounter = enemy.KBTotalTime;
+            if (collision.transform.position.x <= transform.position.x)
+            {
+                enemy.KnockFromRight = true;
+            }
+            else
+            {
+                enemy.KnockFromRight = false;
+            }
             enemy.TakeDamage(1);
+
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
+
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Wall"))
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void SetDirection(Vector2 direction)
+    {
+        this.direction = direction;
     }
 }
