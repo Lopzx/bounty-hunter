@@ -37,7 +37,9 @@ public class PlayerScript : MonoBehaviour
     private bool jumping = false;
     private bool canDash = true;
     private bool isDashing = false;
-    private bool facingRight = true;
+    public bool facingRight = true;
+
+    [SerializeField] public LayerMask groundLayer;
     
 
     // Start is called before the first frame update
@@ -98,7 +100,7 @@ public class PlayerScript : MonoBehaviour
 
     bool CheckJump()
     {
-        RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, Vector2.down, gameObject.transform.localScale.y);
+        RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, Vector2.down, gameObject.transform.localScale.y,groundLayer);
         if (hit.collider == null) { return false; }
         GameObject hitObj = hit.transform.gameObject;
         if (hitObj.CompareTag("Ground"))
@@ -183,9 +185,11 @@ public class PlayerScript : MonoBehaviour
     {
         lives -= damage;
 
-        if (lives < 0)
+        if (lives <= 0)
         {
             Destroy(gameObject);
         }
+
+        Debug.Log("Damage TAKEN, the hp now is " + lives);
     }
 }
