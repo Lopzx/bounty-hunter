@@ -39,6 +39,11 @@ public class PlayerScript : MonoBehaviour
     private bool isDashing = false;
     public bool facingRight = true;
 
+    //Health
+    public GameObject prefabHealth;
+    public List<GameObject> healths;
+    public float healthGap;
+
     [SerializeField] public LayerMask groundLayer;
     
 
@@ -49,6 +54,17 @@ public class PlayerScript : MonoBehaviour
         characterSprite = transform.Find("CharacterSprite").gameObject;
         anim = characterSprite.GetComponent<Animation>();
         sprites = GetComponentsInChildren<SpriteRenderer>();
+
+        //for (int i = 0; i < lives; i++)
+        //{
+        //    Vector3 nextPos = gameObject.transform.position + new Vector3(-371f + (healthGap * healths.Count), 150f, 0f);
+        //    GameObject heartImage = Instantiate(prefabHealth, nextPos, Quaternion.Euler(0, 0, 0));
+        //    //GameObject heartImage = Instantiate(prefabHealth, nextPos, Quaternion.EulerRotation(new Vector3(0, 0, 0)));
+        //    //GameObject peluru = Instantiate(projectile, launchPoint2.position, Quaternion.Euler(0, 0, 0));
+        //    Debug.Log(i);
+        //    healths.Add(heartImage);
+        //    heartImage.transform.parent = gameObject.transform;
+        //}
     }
 
     void move()
@@ -184,6 +200,8 @@ public class PlayerScript : MonoBehaviour
     public void TakeDamage(int damage)
     {
         lives -= damage;
+
+        //InGameScript
 
         if (lives <= 0)
         {

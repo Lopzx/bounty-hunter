@@ -22,8 +22,10 @@ public class InGameScript : MonoBehaviour
 
         for (int i = 0; i < playerHP; i++)
         {
-            Vector3 nextPos = gameObject.transform.position + new Vector3(-371f + (healthGap * healths.Count), 124f, 0f);
-            GameObject heartImage = Instantiate(prefabHealth, nextPos, Quaternion.EulerRotation(new Vector3(0, 0, 0)));
+            Vector3 nextPos = gameObject.transform.position + new Vector3(-371f + (healthGap * healths.Count), 150f, 0f);
+            GameObject heartImage = Instantiate(prefabHealth, nextPos, Quaternion.Euler(0, 0, 0));
+            //GameObject heartImage = Instantiate(prefabHealth, nextPos, Quaternion.EulerRotation(new Vector3(0, 0, 0)));
+            //GameObject peluru = Instantiate(projectile, launchPoint2.position, Quaternion.Euler(0, 0, 0));
             Debug.Log(i);
             healths.Add(heartImage);
             heartImage.transform.parent = gameObject.transform;
@@ -35,6 +37,7 @@ public class InGameScript : MonoBehaviour
     void Update()
     {
         playerHP = playerScript.lives;
+        
     }
 
     private void OnDestroy()
