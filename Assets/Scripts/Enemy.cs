@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class Enemy : MonoBehaviour
 {
     public int health;
+    public int damage;
     public float speed;
     public float distance;
 
@@ -14,9 +16,12 @@ public class Enemy : MonoBehaviour
     public float KBCounter;
     public float KBTotalTime;
     public bool KnockFromRight;
+    public bool isAttack;
 
     [SerializeField] float baseCastDist;
-    
+
+    //Animation
+    public Animator animator;
 
     // Start is called before the first frame update
     void Start()
@@ -62,6 +67,31 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             Destroy(gameObject);
+        }
+    }
+
+    public void AlertObservers(string message)
+    {
+        if (message.Equals("CastingEnd"))
+        {
+            animator.SetBool("IsCast", false);
+            animator.SetBool("IsAttack", true);
+        }
+
+        if (message.Equals("SwordHit"))
+        {
+            animator.SetBool("SwordHit", true);
+        }
+
+        if (message.Equals("ArrowShot"))
+        {
+            animator.SetBool("ShootArrow", true);
+        }
+
+        if (message.Equals("AttackEnd"))
+        {
+            animator.SetBool("IsAttack", false);
+            animator.SetBool("SwordHit", false);
         }
     }
 }

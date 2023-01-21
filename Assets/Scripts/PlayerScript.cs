@@ -26,6 +26,7 @@ public class PlayerScript : MonoBehaviour
     public LayerMask whatIsEnemies;
     public float attackRange;
     public int damage;
+    [SerializeField] public float iframeCounter = 0;
 
     //KnockBack
     public float KBForce;
@@ -38,6 +39,10 @@ public class PlayerScript : MonoBehaviour
     private bool canDash = true;
     private bool isDashing = false;
     public bool facingRight = true;
+    public bool isAttack = false;
+
+    //Animation
+    public Animator animator;
 
     [SerializeField] public LayerMask groundLayer;
     
@@ -46,9 +51,10 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        characterSprite = transform.Find("CharacterSprite").gameObject;
-        anim = characterSprite.GetComponent<Animation>();
-        sprites = GetComponentsInChildren<SpriteRenderer>();
+        transform.rotation = Quaternion.Euler(0, 180, 0);
+        //characterSprite = transform.Find("CharacterSprite").gameObject;
+        //anim = characterSprite.GetComponent<Animation>();
+        //sprites = GetComponentsInChildren<SpriteRenderer>();
     }
 
     void move()
@@ -59,7 +65,7 @@ public class PlayerScript : MonoBehaviour
             //{
             //    sprite.flipX = true;
             //}
-            transform.rotation = Quaternion.Euler(0,180,0);
+            transform.rotation = Quaternion.Euler(0,0,0);
             facingRight = false;
         }
         else if (Input.GetKeyDown(KeyCode.D))
@@ -68,7 +74,7 @@ public class PlayerScript : MonoBehaviour
             //{
             //    sprite.flipX = false;
             //}
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+            transform.rotation = Quaternion.Euler(0, 180, 0);
             facingRight = true;
         }
         /*gameObject.transform.Translate(newPos);*/
@@ -124,48 +130,49 @@ public class PlayerScript : MonoBehaviour
         }
 
         //attack
-        if (timeBtwAttack <= 0)
-        {
-            //then you can attack
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
-                for (int i = 0; i < enemiesToDamage.Length; i++)
-                {
-                    Enemy enemyScript = enemiesToDamage[i].GetComponent<Enemy>();
-                    if (enemyScript != null)
-                    {
-                        enemyScript.KBCounter = enemyScript.KBTotalTime;
-                        if (facingRight)
-                        {
-                            enemyScript.KnockFromRight = false;
-                        }
-                        else
-                        {
-                            enemyScript.KnockFromRight = true;
-                        }
-                        enemyScript.TakeDamage(damage);
-                    }
-                }
-                timeBtwAttack = startTimeBtwAttack;
-            }
-        }
-        else
-        {
-            timeBtwAttack -= Time.deltaTime;
-        }
+        //if (timeBtwAttack <= 0)
+        //{
+        //    //then you can attack
+        //    if (Input.GetKeyDown(KeyCode.Mouse0))
+        //    {
+        //        Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
+        //        for (int i = 0; i < enemiesToDamage.Length; i++)
+        //        {
+        //            Enemy enemyScript = enemiesToDamage[i].GetComponent<Enemy>();
+        //            if (enemyScript != null)
+        //            {
+        //                enemyScript.KBCounter = enemyScript.KBTotalTime;
+        //                if (facingRight)
+        //                {
+        //                    enemyScript.KnockFromRight = false;
+        //                }
+        //                else
+        //                {
+        //                    enemyScript.KnockFromRight = true;
+        //                }
+        //                enemyScript.TakeDamage(damage);
+        //            }
+        //        }
+        //        timeBtwAttack = startTimeBtwAttack;
+        //    }
+        //}
+        //else
+        //{
+        //    timeBtwAttack -= Time.deltaTime;
+        //}
         horizontalInput = Input.GetAxisRaw("Horizontal");
+        animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
     }
 
     private void FixedUpdate()
     {
         if(isDashing) { return; }
 
-        if (KBCounter <= 0)
+        if (KBCounter <= 0 && isAttack == false)
         {
            rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
         }
-        else
+        else if (KBCounter > 0)
         {
             if (KnockFromRight)
             {
@@ -178,18 +185,42 @@ public class PlayerScript : MonoBehaviour
 
             KBCounter -= Time.deltaTime;
         }
-        
+
+        iframeCounter -= Time.deltaTime;
     }
 
     public void TakeDamage(int damage)
     {
-        lives -= damage;
+        if(iframeCounter <= 0)
+        {
+            lives -= damage;
+            Debug.Log("Damage TAKEN, the hp now is " + lives);
+            iframeCounter = 0.5f;
+        }
 
         if (lives <= 0)
         {
             Destroy(gameObject);
         }
+    }
 
-        Debug.Log("Damage TAKEN, the hp now is " + lives);
+    public void AlertObservers(string message)
+    {
+        if (message.Equals("CastingEnd"))
+        {
+            animator.SetBool("IsCast", false);
+            animator.SetBool("IsAttack", true);
+        }
+
+        if (message.Equals("ArrowShot"))
+        {
+            animator.SetBool("ShootArrow", true);
+        }
+
+        if (message.Equals("AttackEnd"))
+        {
+            animator.SetBool("IsAttack", false);
+            isAttack = false;
+        }
     }
 }

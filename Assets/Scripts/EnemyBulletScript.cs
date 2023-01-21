@@ -37,12 +37,26 @@ public class EnemyBulletScript : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            PlayerScript player = collision.transform.parent.parent.GetComponent<PlayerScript>();
+            PlayerScript player = collision.transform.parent.GetComponent<PlayerScript>();
             if(player == null)
             {
                 return;
             }
+            player.KBCounter = player.KBTotalTime;
+            if (collision.transform.position.x <= transform.position.x)
+            {
+                player.KnockFromRight = true;
+            }
+            else
+            {
+                player.KnockFromRight = false;
+            }
             player.TakeDamage(1);
+            Destroy(gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Wall"))
+        {
             Destroy(gameObject);
         }
     }

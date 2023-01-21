@@ -7,6 +7,7 @@ public class EnemyShooting : Enemy
 {
     public GameObject bullet;
     public Transform bulletPos;
+    public Enemy enemy;
 
     private float timer;
     private GameObject player;
@@ -42,8 +43,12 @@ public class EnemyShooting : Enemy
 
             if (timer > 2)
             {
-                timer = 0;
-                shoot();
+                enemy.animator.SetBool("IsCast", true);
+                if (enemy.animator.GetBool("ShootArrow"))
+                {
+                    shoot();
+                    timer = 0;
+                }
             }
         }
     }
@@ -51,11 +56,14 @@ public class EnemyShooting : Enemy
     void shoot()
     {
         Instantiate(bullet, bulletPos.position, Quaternion.identity);
+        enemy.animator.SetBool("ShootArrow", false);
     }
 
     public override void TakeDamage(int damage)
     {
         base.TakeDamage(damage);
+        enemy.animator.SetBool("IsCast", false);
+        enemy.animator.SetBool("IsAttack", false);
         isStagger = true;
         staggerCounter = 1;
     }
