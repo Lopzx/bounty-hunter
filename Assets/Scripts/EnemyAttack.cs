@@ -29,6 +29,7 @@ public class EnemyAttack : MonoBehaviour
 
             if (enemy.animator.GetBool("SwordHit"))
             {
+                AudioManager.instance.PlaySound("Slash");
                 timeBtwAttack = startTimeBtwAttack;
                 enemy.animator.SetBool("SwordHit", false);
                 enemy.isAttack = false;

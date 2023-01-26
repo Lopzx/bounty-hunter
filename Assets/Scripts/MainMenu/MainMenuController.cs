@@ -5,11 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
+    [SerializeField] AudioSource startSound;
     public void ExitGame() {
         Application.Quit();
     }
 
     public void StartGame() {
+        startSound.Play();
         SceneManager.LoadScene("Level 1");
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Animations;
 
@@ -17,6 +18,9 @@ public class Enemy : MonoBehaviour
     public float KBTotalTime;
     public bool KnockFromRight;
     public bool isAttack;
+    public bool isHurt;
+    public bool isDeath;
+    public float deathTimer;
 
     [SerializeField] float baseCastDist;
 
@@ -26,7 +30,7 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -53,20 +57,32 @@ public class Enemy : MonoBehaviour
         //{
         //    transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
         //}
+        if(deathTimer <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
     private void FixedUpdate()
     {
-        
+        if (isDeath)
+        {
+            deathTimer -= Time.deltaTime;
+        }
     }
 
     public virtual void TakeDamage(int damage)
     {
         health -= damage;
         Debug.Log("Damage TAKEN, the hp now is " + health);
+        animator.SetBool("IsHurt", true);
+        AudioManager.instance.PlaySound("EnemyHurt");
+        isHurt = true;
 
         if (health <= 0)
         {
-            Destroy(gameObject);
+            isDeath = true;
+            animator.SetTrigger("IsDeath");
+            AudioManager.instance.PlaySound("PlayerDeath");
         }
     }
 
@@ -92,6 +108,17 @@ public class Enemy : MonoBehaviour
         {
             animator.SetBool("IsAttack", false);
             animator.SetBool("SwordHit", false);
+        }
+
+        if (message.Equals("HurtEnd"))
+        {
+            animator.SetBool("IsHurt", false);
+            isHurt = false;
+        }
+
+        if (message.Equals("DeathEnd"))
+        {
+            animator.SetBool("Tiduran", true);
         }
     }
 }

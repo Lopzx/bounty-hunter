@@ -8,7 +8,7 @@ public class ProjectileLaunch : MonoBehaviour
     public Transform launchPoint;
     public Transform launchPoint2;
     public Transform launchPoint3;
-    public PlayerScript playerScript;
+    private PlayerScript playerScript;
     public bool facingRight;
     public float shootTime;
     public float shootCounter;
@@ -49,12 +49,14 @@ public class ProjectileLaunch : MonoBehaviour
             if (facingRight)
             {
                 GameObject peluru = Instantiate(projectile, launchPoint.position, Quaternion.Euler(0, 0, 0));
+                AudioManager.instance.PlaySound("Arrow");
                 playerScript.animator.SetBool("ShootArrow", false);
                 peluru.GetComponent<Projectile>().SetDirection(Vector2.right);
             }
             else
             {
                 GameObject peluru = Instantiate(projectile, launchPoint.position, Quaternion.Euler(0, 180, 0));
+                AudioManager.instance.PlaySound("Arrow");
                 playerScript.animator.SetBool("ShootArrow", false);
                 peluru.GetComponent<Projectile>().SetDirection(Vector2.left);
             }

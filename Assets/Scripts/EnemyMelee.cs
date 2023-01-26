@@ -44,10 +44,9 @@ public class EnemyMelee : Enemy
 
     private void FixedUpdate()
     {
-        enemyPosition = transform.position.x;
         targetPosition = target.position.x;
 
-        if(enemyPosition > targetPosition)
+        if(transform.position.x > targetPosition)
         {
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
@@ -56,7 +55,7 @@ public class EnemyMelee : Enemy
             transform.eulerAngles = new Vector3(0, -180, 0);
         }
 
-        if (KBCounter <= 0 && isAttack == false)
+        if (KBCounter <= 0 && isAttack == false && isHurt == false && isDeath == false)
         {
             Move();
         }

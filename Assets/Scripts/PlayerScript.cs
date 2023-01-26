@@ -44,6 +44,7 @@ public class PlayerScript : MonoBehaviour
     //Animation
     public Animator animator;
 
+
     [SerializeField] public LayerMask groundLayer;
     
 
@@ -59,21 +60,13 @@ public class PlayerScript : MonoBehaviour
 
     void move()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) && animator.GetBool("Tiduran") == false)
         {
-            //foreach(SpriteRenderer sprite in sprites)
-            //{
-            //    sprite.flipX = true;
-            //}
             transform.rotation = Quaternion.Euler(0,0,0);
             facingRight = false;
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKeyDown(KeyCode.D) && animator.GetBool("Tiduran") == false)
         {
-            //foreach (SpriteRenderer sprite in sprites)
-            //{
-            //    sprite.flipX = false;
-            //}
             transform.rotation = Quaternion.Euler(0, 180, 0);
             facingRight = true;
         }
@@ -129,38 +122,20 @@ public class PlayerScript : MonoBehaviour
             StartCoroutine(dash());
         }
 
-        //attack
-        //if (timeBtwAttack <= 0)
-        //{
-        //    //then you can attack
-        //    if (Input.GetKeyDown(KeyCode.Mouse0))
-        //    {
-        //        Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
-        //        for (int i = 0; i < enemiesToDamage.Length; i++)
-        //        {
-        //            Enemy enemyScript = enemiesToDamage[i].GetComponent<Enemy>();
-        //            if (enemyScript != null)
-        //            {
-        //                enemyScript.KBCounter = enemyScript.KBTotalTime;
-        //                if (facingRight)
-        //                {
-        //                    enemyScript.KnockFromRight = false;
-        //                }
-        //                else
-        //                {
-        //                    enemyScript.KnockFromRight = true;
-        //                }
-        //                enemyScript.TakeDamage(damage);
-        //            }
-        //        }
-        //        timeBtwAttack = startTimeBtwAttack;
-        //    }
-        //}
-        //else
-        //{
-        //    timeBtwAttack -= Time.deltaTime;
-        //}
         horizontalInput = Input.GetAxisRaw("Horizontal");
+
+        //if(horizontalInput != 0 && )
+        //{
+        //    //walkSound.Play();
+        //}
+
+        if(rb.velocity != Vector2.zero)
+        {
+            //harus di check ground yg diinjek
+            //harus di check apakah sound udh selesai dimainin baru bisa mainin lagi sound nya (biar gk numpuk)
+            //AudioManager.instance.PlaySound("WalkDirt");
+        }
+           
         animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
     }
 
@@ -168,7 +143,7 @@ public class PlayerScript : MonoBehaviour
     {
         if(isDashing) { return; }
 
-        if (KBCounter <= 0 && isAttack == false)
+        if (KBCounter <= 0 && isAttack == false && animator.GetBool("IsHurt") == false)
         {
            rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
         }
@@ -194,13 +169,17 @@ public class PlayerScript : MonoBehaviour
         if(iframeCounter <= 0)
         {
             lives -= damage;
+            AudioManager.instance.PlaySound("PlayerHurt");
             Debug.Log("Damage TAKEN, the hp now is " + lives);
+            animator.SetBool("IsHurt", true);
             iframeCounter = 0.5f;
         }
 
         if (lives <= 0)
         {
-            Destroy(gameObject);
+            animator.SetTrigger("IsDeath");
+            AudioManager.instance.PlaySound("PlayerDeath");
+            //Destroy(gameObject);
         }
     }
 
@@ -221,6 +200,16 @@ public class PlayerScript : MonoBehaviour
         {
             animator.SetBool("IsAttack", false);
             isAttack = false;
+        }
+
+        if (message.Equals("HurtEnd"))
+        {
+            animator.SetBool("IsHurt", false);
+        }
+
+        if (message.Equals("DeathEnd"))
+        {
+            animator.SetBool("Tiduran", true);
         }
     }
 }

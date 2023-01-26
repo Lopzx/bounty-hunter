@@ -10,7 +10,6 @@ public class Projectile : MonoBehaviour
     public float projectileLife;
     public float projectileCount;
 
-    public PlayerScript playerScript;
     public bool facingRight;
 
     private Vector2 direction;
@@ -41,11 +40,13 @@ public class Projectile : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            Enemy enemy = collision.transform.GetComponent<Enemy>();
+            Enemy enemy = collision.transform.parent.GetComponent<Enemy>();
             if(enemy == null)
             {
+                Debug.Log("Error");
                 return;
             }
+            AudioManager.instance.PlaySound("ArrowHit");
 
             enemy.KBCounter = enemy.KBTotalTime;
             if (collision.transform.position.x <= transform.position.x)
@@ -63,6 +64,7 @@ public class Projectile : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Wall"))
         {
+            AudioManager.instance.PlaySound("ArrowHit");
             Destroy(gameObject);
         }
     }

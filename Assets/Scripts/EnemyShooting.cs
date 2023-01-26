@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class EnemyShooting : Enemy
@@ -10,14 +11,16 @@ public class EnemyShooting : Enemy
     public Enemy enemy;
 
     private float timer;
-    private GameObject player;
+    private PlayerScript player;
 
     private bool isStagger;
     private float staggerCounter;
+    private float playerPosition;
+    private bool facingRight;
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
     }
 
     // Update is called once per frame
@@ -44,19 +47,48 @@ public class EnemyShooting : Enemy
             if (timer > 2)
             {
                 enemy.animator.SetBool("IsCast", true);
-                if (enemy.animator.GetBool("ShootArrow"))
-                {
-                    shoot();
-                    timer = 0;
-                }
+            }
+        }
+
+        if (enemy == null)
+        {
+            return;
+        }
+
+        if (enemy.animator.GetBool("ShootArrow"))
+        {
+            timer = 0;
+            if (facingRight)
+            {
+                GameObject peluru = Instantiate(bullet, bulletPos.position, Quaternion.Euler(0, 0, 0));
+                AudioManager.instance.PlaySound("Arrow");
+                peluru.GetComponent<EnemyBulletScript>().setDirection(Vector2.right);
+                enemy.animator.SetBool("ShootArrow", false);
+            }
+            else
+            {
+                GameObject peluru = Instantiate(bullet, bulletPos.position, Quaternion.Euler(0, 180, 0));
+                AudioManager.instance.PlaySound("Arrow");
+                peluru.GetComponent<EnemyBulletScript>().setDirection(Vector2.left);
+                enemy.animator.SetBool("ShootArrow", false);
             }
         }
     }
 
-    void shoot()
+    private void FixedUpdate()
     {
-        Instantiate(bullet, bulletPos.position, Quaternion.identity);
-        enemy.animator.SetBool("ShootArrow", false);
+        playerPosition = player.transform.position.x;
+
+        if (transform.position.x > playerPosition)
+        {
+            transform.eulerAngles = new Vector3(0, 0, 0);
+            facingRight = false;
+        }
+        else
+        {
+            transform.eulerAngles = new Vector3(0, -180, 0);
+            facingRight = true;
+        }
     }
 
     public override void TakeDamage(int damage)

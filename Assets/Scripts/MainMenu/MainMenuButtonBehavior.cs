@@ -7,6 +7,9 @@ public class MainMenuButtonBehavior : MonoBehaviour
     public GameObject button;
     Animator anim;
 
+    [SerializeField] AudioSource buttonHoverSound;
+    [SerializeField] AudioSource paperRipSound;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +19,8 @@ public class MainMenuButtonBehavior : MonoBehaviour
     // Update is called once per frame
     public void OnMouseOver() {
         anim.Play("HoverOn");
+        buttonHoverSound.Play();
+        paperRipSound.Play();
         Debug.Log("Play Hover On");
     }
 
