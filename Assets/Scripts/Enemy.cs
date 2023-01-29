@@ -57,17 +57,18 @@ public class Enemy : MonoBehaviour
         //{
         //    transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
         //}
-        if(deathTimer <= 0)
+        Debug.Log(isDeath);
+        if(deathTimer <= 0 || isDeath)
         {
             Destroy(gameObject);
+        }
+        if (isDeath) {
+            deathTimer -= Time.deltaTime;
         }
     }
     private void FixedUpdate()
     {
-        if (isDeath)
-        {
-            deathTimer -= Time.deltaTime;
-        }
+       
     }
 
     public virtual void TakeDamage(int damage)
