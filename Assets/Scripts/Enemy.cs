@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Animations;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class Enemy : MonoBehaviour
 {
@@ -20,7 +21,6 @@ public class Enemy : MonoBehaviour
     public bool isAttack;
     public bool isHurt;
     public bool isDeath;
-    public float deathTimer;
 
     [SerializeField] float baseCastDist;
 
@@ -57,18 +57,17 @@ public class Enemy : MonoBehaviour
         //{
         //    transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
         //}
-        Debug.Log(isDeath);
-        if(deathTimer <= 0 || isDeath)
-        {
-            Destroy(gameObject);
-        }
-        if (isDeath) {
-            deathTimer -= Time.deltaTime;
-        }
+
     }
     private void FixedUpdate()
     {
-       
+
+    }
+
+    IEnumerator DestroyEnemy()
+    {
+        yield return new WaitForSeconds(2);
+        Destroy(gameObject);
     }
 
     public virtual void TakeDamage(int damage)
@@ -84,6 +83,7 @@ public class Enemy : MonoBehaviour
             isDeath = true;
             animator.SetTrigger("IsDeath");
             AudioManager.instance.PlaySound("PlayerDeath");
+            StartCoroutine(DestroyEnemy());
         }
     }
 

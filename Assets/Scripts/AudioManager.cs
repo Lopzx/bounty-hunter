@@ -138,19 +138,27 @@ public class AudioManager : MonoBehaviour
             bgmSource.pitch = 1f;
             bgmSource.Play();
         }
-        AudioSource source = inUseSources.Find((x) => x.clip == s.Clip);
-        if (source == null) source = GetSource();
+        //AudioSource source = inUseSources.Find((x) => x.clip == s.Clip);
+        //if (source == null) 
+        AudioSource source = GetSource();
         SetSourceValue(source, s);
         source.pitch = 1f;
         source.Play();
-        StartCoroutine(ReturnSourceToQueue(source));
+        //StartCoroutine(ReturnSourceToQueue(source));
     }
 
     private IEnumerator ReturnSourceToQueue(AudioSource source)
     {
         yield return new WaitWhile(() => source.isPlaying);
+
+        int x = inUseSources.FindIndex((s) => s == source);
+        if (x >= inUseSources.Count)
+        {
+            yield break;
+        }
+
         sfxSourceQueue.Enqueue(source);
-        inUseSources.RemoveAt(inUseSources.FindIndex((s) => s == source));
+        inUseSources.RemoveAt(x);
     }
 
     private void SetSourceValue(AudioSource source, Sound s)
