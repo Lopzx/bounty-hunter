@@ -9,6 +9,7 @@ public class InGameScript : MonoBehaviour
     private bool gameIsFinished;
     public int enemyCounter;
     public int playerHP;
+    public GameObject healthBar;
     public GameObject prefabHealth;
     public GameObject prefabUILose;
     public GameObject prefabUIWin;
@@ -20,28 +21,43 @@ public class InGameScript : MonoBehaviour
     //Script Settings
     public float healthGap;
 
+    void DrawHealth() {
+        healths.ForEach((GameObject x) => { Destroy(x); });
+        healths.Clear();
+        RectTransform rTrans = gameObject.GetComponent<RectTransform>();
+
+        for (int i = 0; i < playerHP; i++) {
+            Vector3 nextPos =new Vector3(i * healthGap, 0,0);
+            Debug.Log(nextPos);
+            GameObject heartImage = Instantiate(prefabHealth, nextPos, Quaternion.EulerRotation(new Vector3(0, 0, 0)));
+            heartImage.transform.SetParent(healthBar.transform, false);
+            healths.Add(heartImage);
+            
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.Find("Player");
         playerScript = player.GetComponent<PlayerScript>();
         playerHP = playerScript.lives;
-
-
-        for (int i = 0; i < playerHP; i++)
-        {
-            Vector3 nextPos = gameObject.transform.position + new Vector3(-300f + (healthGap * healths.Count), 125f, 0f);
-            GameObject heartImage = Instantiate(prefabHealth, nextPos, Quaternion.EulerRotation(new Vector3(0, 0, 0)));
-            Debug.Log(i);
-            healths.Add(heartImage);
-            heartImage.transform.parent = gameObject.transform;
-        }
+        DrawHealth();
 
     }
 
+    void ReSetValue() {
+        healths.ForEach((GameObject x) => {
+            x.GetComponent<RectTransform>().localPosition = new Vector3(0,0,0);
+            /* x.transform.localPosition.Set(0, 0, 0);*/
+        });
+    }
     // Update is called once per frame
     void Update()
     {
+        /*prefabHealth = GameObject.Find("HP");*/
+        /*DrawHealth();*/
+       /* ReSetValue();*/
         enemyCounter = GameObject.FindGameObjectsWithTag("Enemy").Length;
         enemyList = GameObject.FindGameObjectsWithTag("Enemy");
         player = GameObject.Find("Player");

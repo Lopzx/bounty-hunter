@@ -35,7 +35,7 @@ public class EnemyShooting : Enemy
             isStagger = false;
         }
 
-        if (distance < 6)
+        if (distance < 9)
         {
             timer += Time.deltaTime;
 
