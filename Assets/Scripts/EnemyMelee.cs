@@ -6,6 +6,7 @@ public class EnemyMelee : Enemy
 {
     private Rigidbody2D rb;
     public EnemyDetectPlayer detectAI;
+    private PlayerScript playerScript;
 
     public Transform posOne;
     public Transform posTwo;
@@ -17,6 +18,7 @@ public class EnemyMelee : Enemy
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         target = posOne;
     }
 
@@ -26,7 +28,15 @@ public class EnemyMelee : Enemy
         //Enemy Move
         if (detectAI.PlayerInArea)
         {
-            target = detectAI.Player;
+            if(playerScript.lives > 0)
+            {
+                target = detectAI.Player;
+            }
+            else
+            {
+                target = posOne;
+            }
+            
         }
         else if (detectAI.PlayerInArea == false && target == detectAI.Player)
         {

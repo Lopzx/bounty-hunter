@@ -9,6 +9,12 @@ public class EnemyAttack : MonoBehaviour
     public EnemyMelee enemy;
     public float timeBtwAttack;
     public float startTimeBtwAttack;
+    private PlayerScript playerScript;
+
+    private void Start()
+    {
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+    }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -16,7 +22,7 @@ public class EnemyAttack : MonoBehaviour
         if (timeBtwAttack <= 0)
         {
             //then it can attack
-            if (collision.gameObject.tag == "Player" && enemy.isAttack == false)
+            if (collision.gameObject.tag == "Player" && enemy.isAttack == false && playerScript.lives > 0)
             {
                 enemy.isAttack = true;
                 enemy.animator.SetBool("IsCast", true);

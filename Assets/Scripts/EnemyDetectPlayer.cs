@@ -7,16 +7,29 @@ public class EnemyDetectPlayer : MonoBehaviour
     [field: SerializeField]
     public bool PlayerInArea { get; private set; }
     public Transform Player { get; private set; }
+    private PlayerScript playerScript;
 
     [SerializeField]
     private string detectionTag = "Player";
+
+    private void Start()
+    {
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag(detectionTag))
         {
-            PlayerInArea = true;
-            Player = collision.gameObject.transform;
+            if(playerScript.lives > 0)
+            {
+                PlayerInArea = true;
+                Player = collision.gameObject.transform;
+            }
+            else
+            {
+                PlayerInArea = false;
+            }
         }
     }
 
