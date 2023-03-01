@@ -44,7 +44,7 @@ public class EnemyShooting : Enemy
                 timer = 0;
             }
 
-            if (timer > 2 && player.lives > 0)
+            if (timer > 4 && player.lives > 0)
             {
                 enemy.animator.SetBool("IsCast", true);
             }

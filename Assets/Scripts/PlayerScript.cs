@@ -40,6 +40,7 @@ public class PlayerScript : MonoBehaviour
     private bool isDashing = false;
     public bool facingRight = true;
     public bool isAttack = false;
+    private bool isDeath = false;
 
     //Animation
     public Animator animator;
@@ -114,7 +115,7 @@ public class PlayerScript : MonoBehaviour
     {
         if (isDashing) { return; }
         move();
-        if (Input.GetKeyDown(KeyCode.Space) && CheckJump()) {
+        if (Input.GetKeyDown(KeyCode.Space) && CheckJump() && isDeath == false) {
             jump();
         }
 
@@ -143,7 +144,7 @@ public class PlayerScript : MonoBehaviour
     {
         if(isDashing) { return; }
 
-        if (KBCounter <= 0 && isAttack == false && animator.GetBool("IsHurt") == false)
+        if (KBCounter <= 0 && isAttack == false && animator.GetBool("IsHurt") == false && isDeath == false)
         {
            rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
         }
@@ -177,6 +178,7 @@ public class PlayerScript : MonoBehaviour
 
         if (lives <= 0)
         {
+            isDeath = true;
             animator.SetTrigger("IsDeath");
             AudioManager.instance.PlaySound("PlayerDeath");
 

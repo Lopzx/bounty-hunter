@@ -23,7 +23,6 @@ public class AudioManager : MonoBehaviour
         else
         {
             instance = this;
-            DontDestroyOnLoad(this.gameObject);
         }
 
         //Add AudioSources
@@ -144,6 +143,29 @@ public class AudioManager : MonoBehaviour
         SetSourceValue(source, s);
         source.pitch = 1f;
         source.Play();
+        //StartCoroutine(ReturnSourceToQueue(source));
+    }
+
+    public void StopSound(string name)
+    {
+        Sound s = sounds.Find((sound) => sound.Name == name);
+        if (s == null)
+        {
+            Debug.Log(name + " isn't in the list");
+            return;
+        }
+        if (s.Type == SoundType.BGM)
+        {
+            SetSourceValue(bgmSource, s);
+            bgmSource.pitch = 1f;
+            bgmSource.Stop();
+        }
+        //AudioSource source = inUseSources.Find((x) => x.clip == s.Clip);
+        //if (source == null) 
+        AudioSource source = GetSource();
+        SetSourceValue(source, s);
+        source.pitch = 1f;
+        source.Stop();
         //StartCoroutine(ReturnSourceToQueue(source));
     }
 

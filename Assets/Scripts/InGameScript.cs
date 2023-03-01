@@ -66,6 +66,7 @@ public class InGameScript : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Escape)) {
             SceneManager.LoadScene("MainMenu");
+            AudioManager.instance.StopSound("BGM");
         }
         if(enemyCounter == 0 && UIInstantiated == false) {
             GameObject winUI = Instantiate(prefabUIWin, gameObject.transform.position, Quaternion.EulerRotation(new Vector3(0, 0, 0)));
