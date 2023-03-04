@@ -40,7 +40,7 @@ public class PlayerScript : MonoBehaviour
     private bool isDashing = false;
     public bool facingRight = true;
     public bool isAttack = false;
-    private bool isDeath = false;
+    public bool isDeath = false;
 
     //Animation
     public Animator animator;

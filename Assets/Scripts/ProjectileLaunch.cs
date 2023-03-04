@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class ProjectileLaunch : MonoBehaviour
 {
@@ -38,7 +39,7 @@ public class ProjectileLaunch : MonoBehaviour
         //    shootCounter = shootTime;
         //}
         
-        if (Input.GetKeyDown(KeyCode.Mouse0) && shootCounter <= 0)
+        if (Input.GetKeyDown(KeyCode.Mouse0) && shootCounter <= 0 && playerScript.animator.GetBool("IsHurt") == false && playerScript.KBCounter <= 0 && playerScript.isDeath == false && playerScript.isAttack == false)
         {
             playerScript.animator.SetBool("IsCast", true);
             playerScript.isAttack = true;

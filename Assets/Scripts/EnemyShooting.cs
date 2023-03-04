@@ -35,7 +35,7 @@ public class EnemyShooting : Enemy
             isStagger = false;
         }
 
-        if (distance < 9)
+        if (distance < 10)
         {
             timer += Time.deltaTime;
 
@@ -44,7 +44,7 @@ public class EnemyShooting : Enemy
                 timer = 0;
             }
 
-            if (timer > 4 && player.lives > 0)
+            if (timer > 3 && player.lives > 0)
             {
                 enemy.animator.SetBool("IsCast", true);
             }
