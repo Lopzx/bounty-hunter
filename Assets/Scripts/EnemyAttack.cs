@@ -22,7 +22,7 @@ public class EnemyAttack : MonoBehaviour
         if (timeBtwAttack <= 0)
         {
             //then it can attack
-            if (collision.gameObject.tag == "Player" && enemy.isAttack == false && playerScript.lives > 0)
+            if (collision.gameObject.tag == "Player" && enemy.isAttack == false && playerScript.lives > 0 && enemy.isHurt == false)
             {
                 enemy.isAttack = true;
                 enemy.animator.SetBool("IsCast", true);

@@ -77,6 +77,8 @@ public class Enemy : MonoBehaviour
         animator.SetBool("IsHurt", true);
         AudioManager.instance.PlaySound("EnemyHurt");
         isHurt = true;
+        isAttack = false;
+        animator.SetBool("IsCast", false);
 
         if (health <= 0)
         {
